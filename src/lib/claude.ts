@@ -13,7 +13,7 @@ Journey stages:
 Given the user's onboarding answers, you MUST respond with ONLY valid JSON in this exact format:
 {
   "stage": "aware|exploring|applying|building",
-  "summary": "A 2-3 sentence personalized summary of where the user is in their AI journey and what they should focus on.",
+  "summary": "A 2-3 sentence personalized summary in Portuguese of where the user is in their AI journey and what they should focus on.",
   "resourceIds": ["id1", "id2", "id3", ...]
 }
 
@@ -23,8 +23,8 @@ export type OnboardingAnswers = {
   experience: string;
   goal: string;
   domain: string;
-  time: string;
-  style: string;
+  timeAvailable: string;
+  learningStyle: string;
 };
 
 export type PathGenerationResult = {
@@ -45,8 +45,8 @@ export async function generateLearningPath(
 - Experience level: ${answers.experience}
 - Primary goal: ${answers.goal}
 - Domain/industry: ${answers.domain}
-- Available time per week: ${answers.time}
-- Preferred learning style: ${answers.style}
+- Available time per week: ${answers.timeAvailable}
+- Preferred learning style: ${answers.learningStyle}
 
 Available resources:
 ${resourceList}

@@ -274,15 +274,15 @@ model UserProgress {
 
 ---
 
-## 8. Open Questions
+## 8. Open Questions — RESOLVED (2026-04-22, CEO)
 
-| # | Question | Owner | Due |
-|---|----------|-------|-----|
-| OQ-1 | What are the 50+ seed resources for launch? Who curates them? | Product | Before dev starts |
-| OQ-2 | Should Claude select resources from DB (tool use) or generate recommendations that we map to DB? | CTO | Before AI sprint |
-| OQ-3 | Do we need a waitlist / invite flow before public launch? | CEO | Before launch planning |
-| OQ-4 | Privacy policy / ToS — who drafts? | Legal/CEO | Before launch |
-| OQ-5 | What analytics tool? (PostHog, Amplitude, Mixpanel) | CTO | Before MVP deploy |
+| # | Question | Decision |
+|---|----------|----------|
+| OQ-1 | What are the 50+ seed resources for launch? Who curates them? | **CEO owns curation.** CTO provides schema + admin UI; CEO sources content. |
+| OQ-2 | Claude tool use vs. generate-then-map for resource selection? | **Claude selects from DB via tool use** — better quality control. |
+| OQ-3 | Waitlist / invite flow before public launch? | **No waitlist.** Open access from day one — need real signups to validate. |
+| OQ-4 | Privacy policy / ToS — who drafts? | **CEO drafts.** CTO to tag CEO when deploy is close. |
+| OQ-5 | Analytics tool? | **PostHog** — open source, GDPR-friendly, generous free tier. |
 
 ---
 

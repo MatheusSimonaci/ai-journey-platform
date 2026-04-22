@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { generateLearningPath, type OnboardingAnswers } from "@/lib/claude";
+import { generateLearningPath } from "@/lib/claude";
+
+const schema = z.object({
+  experience: z.enum(["aware", "exploring", "applying", "building"]),
+  goal: z.enum(["stay_informed", "apply_to_work", "build_products", "research"]),
+  domain: z.enum(["tech", "business", "creative", "healthcare", "education", "legal", "other"]),
+  timeAvailable: z.enum(["under_1h", "1_3h", "3_5h", "over_5h"]),
+  learningStyle: z.enum(["reading", "video", "hands_on", "mixed"]),
+});
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -10,12 +19,15 @@ export async function POST(req: NextRequest) {
   }
   const userId = session.user.id;
 
-  const body = await req.json();
-  const answers = body.answers as OnboardingAnswers;
-
-  if (!answers?.experience || !answers?.goal || !answers?.domain || !answers?.time || !answers?.style) {
-    return NextResponse.json({ error: "Missing required answers" }, { status: 400 });
+  const body: unknown = await req.json();
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Invalid request body", details: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
+  const answers = parsed.data;
 
   const resources = await db.resource.findMany({
     select: { id: true, title: true, type: true, stages: true, tags: true },
@@ -28,8 +40,8 @@ export async function POST(req: NextRequest) {
   await db.$transaction(async (tx) => {
     await tx.onboardingResponse.upsert({
       where: { userId },
-      create: { userId, answers, stage, updatedAt: new Date() },
-      update: { answers, stage, updatedAt: new Date() },
+      create: { userId, answers, stage },
+      update: { answers, stage },
     });
 
     const existing = await tx.learningPath.findUnique({ where: { userId } });
@@ -41,7 +53,6 @@ export async function POST(req: NextRequest) {
           stage,
           summary,
           generatedAt: new Date(),
-          updatedAt: new Date(),
           items: {
             create: validIds.map((resourceId, order) => ({ resourceId, order })),
           },
@@ -61,5 +72,5 @@ export async function POST(req: NextRequest) {
     }
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ success: true });
 }

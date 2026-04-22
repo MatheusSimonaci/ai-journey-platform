@@ -6,54 +6,55 @@ import { useRouter } from "next/navigation";
 const QUESTIONS = [
   {
     id: "experience",
-    title: "Qual é seu nível de experiência com IA?",
+    title: "Como você descreveria sua experiência com IA hoje?",
     options: [
-      { value: "none", label: "Nenhum — ouço falar mas nunca usei" },
-      { value: "basic", label: "Básico — já usei ChatGPT ou ferramentas similares" },
-      { value: "hands_on", label: "Intermediário — uso IA regularmente no meu trabalho" },
-      { value: "building", label: "Avançado — desenvolvo produtos ou sistemas com IA" },
+      { value: "aware", label: "Já ouvi falar, mas nunca usei" },
+      { value: "exploring", label: "Já experimentei ferramentas como ChatGPT" },
+      { value: "applying", label: "Uso IA regularmente no meu trabalho" },
+      { value: "building", label: "Estou construindo produtos ou integrações com IA" },
     ],
   },
   {
     id: "goal",
     title: "Qual é seu principal objetivo com IA?",
     options: [
-      { value: "stay_informed", label: "Me manter informado e relevante" },
-      { value: "apply_to_work", label: "Aplicar IA no meu trabalho atual" },
-      { value: "build_products", label: "Construir produtos com IA" },
-      { value: "research", label: "Pesquisar e explorar IA em profundidade" },
+      { value: "stay_informed", label: "Me manter atualizado" },
+      { value: "apply_to_work", label: "Aplicar no meu trabalho" },
+      { value: "build_products", label: "Construir produtos" },
+      { value: "research", label: "Pesquisa e desenvolvimento" },
     ],
   },
   {
     id: "domain",
     title: "Em qual área você atua?",
     options: [
-      { value: "tech", label: "Tecnologia / Engenharia" },
-      { value: "business", label: "Negócios / Gestão" },
-      { value: "creative", label: "Criação / Design / Marketing" },
-      { value: "health", label: "Saúde / Ciências" },
+      { value: "tech", label: "Tecnologia" },
+      { value: "business", label: "Negócios/Gestão" },
+      { value: "creative", label: "Criativo/Design" },
+      { value: "healthcare", label: "Saúde" },
       { value: "education", label: "Educação" },
-      { value: "other", label: "Outra área" },
+      { value: "legal", label: "Jurídico" },
+      { value: "other", label: "Outro" },
     ],
   },
   {
-    id: "time",
-    title: "Quanto tempo por semana você pode dedicar ao aprendizado?",
+    id: "timeAvailable",
+    title: "Quanto tempo por semana você pode dedicar ao aprendizado de IA?",
     options: [
-      { value: "less_1h", label: "Menos de 1 hora" },
-      { value: "1_3h", label: "1 a 3 horas" },
-      { value: "3_5h", label: "3 a 5 horas" },
-      { value: "5h_plus", label: "Mais de 5 horas" },
+      { value: "under_1h", label: "Menos de 1h" },
+      { value: "1_3h", label: "1-3 horas" },
+      { value: "3_5h", label: "3-5 horas" },
+      { value: "over_5h", label: "Mais de 5 horas" },
     ],
   },
   {
-    id: "style",
-    title: "Como você aprende melhor?",
+    id: "learningStyle",
+    title: "Como você prefere aprender?",
     options: [
-      { value: "reading", label: "Lendo artigos e documentação" },
-      { value: "video", label: "Assistindo vídeos e cursos" },
-      { value: "hands_on", label: "Praticando e experimentando" },
-      { value: "mixed", label: "Uma mistura de tudo" },
+      { value: "reading", label: "Lendo artigos" },
+      { value: "video", label: "Assistindo vídeos" },
+      { value: "hands_on", label: "Praticando / mão na massa" },
+      { value: "mixed", label: "Combinação de tudo" },
     ],
   },
 ];
@@ -87,12 +88,18 @@ export default function OnboardingPage() {
       const res = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({
+          experience: answers.experience,
+          goal: answers.goal,
+          domain: answers.domain,
+          timeAvailable: answers.timeAvailable,
+          learningStyle: answers.learningStyle,
+        }),
       });
       if (res.ok) {
         router.push("/dashboard");
       } else {
-        const err = await res.json();
+        const err = await res.json() as { error?: string };
         alert(err.error ?? "Erro ao processar. Tente novamente.");
         setLoading(false);
       }
@@ -108,10 +115,10 @@ export default function OnboardingPage() {
         <div className="text-center space-y-4">
           <div className="text-4xl animate-pulse">🤖</div>
           <h2 className="text-xl font-semibold text-slate-800">
-            Analisando seu perfil...
+            Gerando seu caminho personalizado...
           </h2>
           <p className="text-slate-500">
-            A IA está gerando seu caminho de aprendizado personalizado.
+            A IA está analisando seu perfil e selecionando os melhores recursos para você.
           </p>
         </div>
       </main>
