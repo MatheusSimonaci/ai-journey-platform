@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  onboardingResponse OnboardingResponse?
+  learningPath      LearningPath?
+  progress          UserProgress[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// AI Journey domain models
+
+model OnboardingResponse {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  answers   Json
+  stage     String   // beginner | explorer | practitioner | builder | expert
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LearningPath {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  stage       String
+  summary     String
+  items       LearningPathItem[]
+  generatedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LearningPathItem {
+  id             String   @id @default(cuid())
+  learningPathId String
+  resourceId     String
+  order          Int
+  reason         String?
+
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  resource     Resource     @relation(fields: [resourceId], references: [id])
+
+  @@unique([learningPathId, resourceId])
+}
+
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  url         String
+  type        String   // article | video | course | tool | book
+  stages      String[] // which journey stages this is relevant for
+  tags        String[]
+  createdAt   DateTime @default(now())
+
+  pathItems LearningPathItem[]
+  progress  UserProgress[]
+}
+
+model UserProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  resourceId  String
+  status      String    // not_started | in_progress | completed | skipped
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id])
+
+  @@unique([userId, resourceId])
+}
