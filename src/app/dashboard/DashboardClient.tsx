@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { ResourceCard, type ResourceItem } from "@/components/ResourceCard";
+import { useEventTracking } from "@/lib/use-event-tracking";
 
 const STAGE_LABELS: Record<string, { label: string; color: string }> = {
   aware: { label: "Consciente", color: "bg-purple-100 text-purple-800" },
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export default function DashboardClient({ userName, stage, summary, items, completedCount }: Props) {
+  useEventTracking();
   const [resources] = useState(items);
   const stageInfo = STAGE_LABELS[stage] ?? { label: stage, color: "bg-slate-100 text-slate-800" };
   const total = resources.length;

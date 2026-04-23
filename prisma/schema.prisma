@@ -24,6 +24,8 @@ model User {
   onboardingResponse OnboardingResponse?
   learningPath      LearningPath?
   progress          UserProgress[]
+  tokenUsageLogs    TokenUsageLog[]
+  tokenBudget       TokenBudget?
 }
 
 model Account {
@@ -129,4 +131,38 @@ model UserProgress {
   resource Resource @relation(fields: [resourceId], references: [id])
 
   @@unique([userId, resourceId])
+}
+
+model TokenUsageLog {
+  id              String   @id @default(cuid())
+  userId          String
+  model           String   // claude-sonnet-4-6, claude-opus-4-7, etc
+  inputTokens     Int      // tokens consumed from input
+  outputTokens    Int      // tokens generated in output
+  totalTokens     Int      // total = input + output
+  operation       String   // learning_path, resource_generation, etc
+  status          String   // success, error, etc
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+model TokenBudget {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  monthlyLimitTokens Int     // total tokens allowed per month
+  dailyLimitTokens  Int?     // optional daily limit
+  tokensUsedThisMonth Int    @default(0)
+  tokensUsedToday   Int      @default(0)
+  lastResetMonth    DateTime
+  lastResetDay      DateTime
+  alertThresholdPercent Int  @default(80) // alert when usage reaches 80% of limit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

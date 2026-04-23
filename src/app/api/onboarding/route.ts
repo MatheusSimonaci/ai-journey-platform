@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generateLearningPath } from "@/lib/claude";
+import { trackServerEvent } from "@/lib/server-events";
 
 const schema = z.object({
   experience: z.enum(["aware", "exploring", "applying", "building"]),
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     select: { id: true, title: true, type: true, stages: true, tags: true },
   });
 
-  const { stage, summary, resourceIds } = await generateLearningPath(answers, resources);
+  const { stage, summary, resourceIds } = await generateLearningPath(answers, resources, userId);
 
   const validIds = resourceIds.filter((id) => resources.some((r) => r.id === id));
 
@@ -70,6 +71,23 @@ export async function POST(req: NextRequest) {
         },
       });
     }
+  });
+
+  await trackServerEvent("onboarding_completed", {
+    user_id: userId,
+    ai_experience_level: answers.experience,
+    primary_goal: answers.goal,
+    path_stage: stage,
+    resource_count: validIds.length,
+  });
+
+  validIds.forEach((resourceId) => {
+    trackServerEvent("resource_assigned", {
+      user_id: userId,
+      resource_id: resourceId,
+      resource_count: validIds.length,
+      path_stage: stage,
+    });
   });
 
   return NextResponse.json({ success: true });

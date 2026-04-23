@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { checkTokenBudget, logTokenUsage } from "@/lib/token-tracking";
 
 const SYSTEM_PROMPT = `You are an AI learning path advisor. Your job is to analyze a user's AI learning profile and return a structured JSON response.
 
@@ -164,6 +165,7 @@ export function generateFallbackLearningPath(
 
 async function generateAiLearningPath(
   client: Anthropic,
+  userId: string,
   answers: OnboardingAnswers,
   resources: ResourceForPath[]
 ): Promise<PathGenerationResult> {
@@ -183,12 +185,27 @@ ${resourceList}
 
 Respond with JSON only.`;
 
+  const budgetCheck = await checkTokenBudget(userId);
+  if (!budgetCheck.allowed) {
+    throw new Error(`Token budget limit reached: ${budgetCheck.reason}`);
+  }
+
   const message = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userMessage }],
   });
+
+  await logTokenUsage(
+    userId,
+    {
+      inputTokens: message.usage.input_tokens,
+      outputTokens: message.usage.output_tokens,
+    },
+    "claude-sonnet-4-6",
+    "learning_path"
+  );
 
   const text = message.content[0].type === "text" ? message.content[0].text : "";
   const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -199,7 +216,8 @@ Respond with JSON only.`;
 
 export async function generateLearningPath(
   answers: OnboardingAnswers,
-  resources: ResourceForPath[]
+  resources: ResourceForPath[],
+  userId?: string
 ): Promise<PathGenerationResult> {
   const client = getAnthropicClient();
   if (!client) {
@@ -207,8 +225,12 @@ export async function generateLearningPath(
   }
 
   try {
-    return await generateAiLearningPath(client, answers, resources);
-  } catch {
+    if (!userId) throw new Error("userId is required for API-based path generation");
+    return await generateAiLearningPath(client, userId, answers, resources);
+  } catch (error) {
+    if (userId) {
+      await logTokenUsage(userId, { inputTokens: 0, outputTokens: 0 }, "claude-sonnet-4-6", "learning_path", "error", String(error));
+    }
     return generateFallbackLearningPath(answers, resources);
   }
 }
