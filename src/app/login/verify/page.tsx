@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 export default function VerifyPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-slate-50 p-8">
