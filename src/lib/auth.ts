@@ -3,17 +3,9 @@ import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./db";
-import {
-  getAuthConfigurationErrors,
-  getAuthProviderAvailability,
-} from "./auth-config";
+import { getAuthProviderAvailability } from "./auth-config";
 
 const authAvailability = getAuthProviderAvailability(process.env);
-const authConfigErrors = getAuthConfigurationErrors(process.env);
-
-if (authConfigErrors.length > 0 && process.env.NEXT_PHASE !== "phase-production-build") {
-  throw new Error(`Invalid auth configuration: ${authConfigErrors.join(" ")}`);
-}
 
 const providers = [];
 
