@@ -76,7 +76,19 @@ export default function DashboardClient({ userName, stage, summary, items, compl
           ))}
         </div>
 
-        <div className="text-center pt-4">
+        <div className="flex flex-col items-center gap-3 pt-4">
+          <a
+            href="/tracks"
+            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
+          >
+            Trilhas por Área →
+          </a>
+          <a
+            href="/conhecimento"
+            className="text-sm bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
+          >
+            Base de Conhecimento →
+          </a>
           <a
             href="/onboarding"
             className="text-sm text-slate-500 hover:text-blue-600 transition-colors"

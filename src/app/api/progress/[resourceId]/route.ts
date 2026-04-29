@@ -18,12 +18,6 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
-  const existingProgress = await db.userProgress.findUnique({
-    where: { userId_resourceId: { userId: session.user.id, resourceId: params.resourceId } },
-  });
-
-  const isFirstCompletion = !existingProgress || existingProgress.status !== "completed";
-
   const progress = await db.userProgress.upsert({
     where: { userId_resourceId: { userId: session.user.id, resourceId: params.resourceId } },
     create: {
@@ -44,11 +38,18 @@ export async function PATCH(
       select: { type: true, stages: true },
     });
 
-    await trackServerEvent("resource_completed", {
-      user_id: session.user.id,
+    const otherCompletionsCount = await db.userProgress.count({
+      where: {
+        userId: session.user.id,
+        status: "completed",
+        NOT: { resourceId: params.resourceId },
+      },
+    });
+
+    await trackServerEvent("resource_completed", session.user.id, {
       resource_id: params.resourceId,
       resource_type: resource?.type,
-      is_first_resource: isFirstCompletion && existingProgress === null,
+      is_first_resource: otherCompletionsCount === 0,
       resource_stage: resource?.stages?.[0] || "unknown",
     });
   }

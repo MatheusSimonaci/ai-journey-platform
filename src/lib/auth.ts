@@ -4,6 +4,7 @@ import Resend from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./db";
 import { getAuthProviderAvailability } from "./auth-config";
+import { trackServerEvent } from "./server-events";
 
 const authAvailability = getAuthProviderAvailability(process.env);
 
@@ -34,6 +35,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session({ session, user }) {
       session.user.id = user.id;
       return session;
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      if (user.id) {
+        await trackServerEvent("user_signup", user.id, {
+          email_domain: user.email?.split("@")[1],
+          method: user.email ? "email" : "oauth",
+        });
+      }
     },
   },
   pages: {

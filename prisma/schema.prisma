@@ -26,6 +26,9 @@ model User {
   progress          UserProgress[]
   tokenUsageLogs    TokenUsageLog[]
   tokenBudget       TokenBudget?
+  cohortEnrollments CohortEnrollment[]
+  knowledgeEntries  KnowledgeEntry[]
+  trackEnrollments  TrackEnrollment[]
 }
 
 model Account {
@@ -114,8 +117,9 @@ model Resource {
   tags        String[]
   createdAt   DateTime @default(now())
 
-  pathItems LearningPathItem[]
-  progress  UserProgress[]
+  pathItems     LearningPathItem[]
+  progress      UserProgress[]
+  trackItems    TrackResource[]
 }
 
 model UserProgress {
@@ -165,4 +169,104 @@ model TokenBudget {
   updatedAt         DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Cohort {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  status      String   @default("upcoming") // upcoming, active, completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  enrollments CohortEnrollment[]
+}
+
+model CohortEnrollment {
+  id          String   @id @default(cuid())
+  cohortId    String
+  userId      String
+  status      String   @default("active") // active, withdrawn, completed
+  enrolledAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cohort Cohort @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([cohortId, userId])
+}
+
+model KnowledgeEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  body        String   // main content
+  url         String?  // optional reference URL
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  socialExports  SocialExport[]
+
+  @@index([userId, createdAt])
+}
+
+model SocialExport {
+  id               String   @id @default(cuid())
+  knowledgeEntryId String
+  platform         String   // linkedin | twitter | instagram
+  formattedContent Json     // platform-specific formatted output
+  status           String   @default("draft") // draft | copied | posted
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  knowledgeEntry KnowledgeEntry @relation(fields: [knowledgeEntryId], references: [id], onDelete: Cascade)
+
+  @@index([knowledgeEntryId])
+}
+
+// Domain-specific learning tracks
+
+model Track {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  icon        String
+  color       String   // tailwind color key e.g. "purple"
+  domain      String   // legal | creative | tech_management
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  resources   TrackResource[]
+  enrollments TrackEnrollment[]
+}
+
+model TrackResource {
+  id         String @id @default(cuid())
+  trackId    String
+  resourceId String
+  order      Int
+
+  track    Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id])
+
+  @@unique([trackId, resourceId])
+}
+
+model TrackEnrollment {
+  id          String    @id @default(cuid())
+  trackId     String
+  userId      String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([trackId, userId])
 }

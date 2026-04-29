@@ -64,6 +64,84 @@ const resources = [
   { title: "Simon Willison's LLM CLI Tool", url: "https://llm.datasette.io/en/stable/", type: "tool", stages: ["exploring", "building"], tags: ["cli", "llm", "open-source", "local"], description: "Command-line tool for running LLMs locally and via APIs. Great for prototyping and scripting AI workflows." },
 ];
 
+// Domain-specific track resources
+const trackResources = [
+  // AI for Legal track resources
+  {
+    trackSlug: "ai-for-legal",
+    resources: [
+      { title: "AI for Lawyers: A Practical Guide", url: "https://www.americanbar.org/groups/law_practice/publications/techreport/2024/", type: "article", tags: ["legal", "practical", "lawyers"], description: "ABA guide on practical AI use for legal professionals." },
+      { title: "ChatGPT in Legal Practice: Risks and Rewards", url: "https://www.lawsociety.org.uk/topics/research/use-of-ai-in-legal-practice", type: "article", tags: ["legal", "risk", "compliance"], description: "Law Society assessment of AI risks and opportunities in legal practice." },
+      { title: "Clio AI for Legal Teams", url: "https://www.clio.com/features/clio-duo/", type: "tool", tags: ["legal", "tool", "productivity"], description: "AI-powered legal practice management with document drafting and research." },
+      { title: "Prompt Engineering for Legal Documents", url: "https://www.promptingguide.ai", type: "article", tags: ["prompting", "legal", "drafting"], description: "How to write effective prompts for contract review, legal memos, and briefs." },
+      { title: "Harvey AI – Legal AI Assistant", url: "https://www.harvey.ai", type: "tool", tags: ["legal", "AI tool", "contracts"], description: "Purpose-built AI for law firms: contract review, due diligence, and regulatory analysis." },
+      { title: "AI in Legal Research: LexisNexis AI", url: "https://www.lexisnexis.com/en-us/products/lexis-plus-ai.page", type: "tool", tags: ["legal research", "AI tool"], description: "AI-powered legal research with citation analysis and case summarization." },
+      { title: "AI Ethics for Legal Professionals", url: "https://ethics-of-ai.mooc.fi", type: "course", tags: ["ethics", "legal", "AI responsibility"], description: "Ethics principles directly applicable to attorney AI use and client confidentiality." },
+      { title: "Contract Review with AI: A Step-by-Step Guide", url: "https://www.oneusefulthing.org/p/how-to-use-ai-to-do-practical-stuff", type: "article", tags: ["contracts", "practical", "legal"], description: "Research-backed methods for using AI to review contracts faster and more accurately." },
+    ],
+  },
+  // AI for Creative track resources
+  {
+    trackSlug: "ai-for-creative",
+    resources: [
+      { title: "Midjourney for Designers: Getting Started", url: "https://docs.midjourney.com/hc/en-us/articles/360043691131-Quick-Start", type: "article", tags: ["design", "image generation", "Midjourney"], description: "Official guide to generating images with Midjourney for creative projects." },
+      { title: "Adobe Firefly: AI for Creative Workflows", url: "https://helpx.adobe.com/firefly/get-started.html", type: "tool", tags: ["design", "Adobe", "AI art"], description: "Adobe's generative AI integrated into Creative Cloud — ideation, mockups, and asset generation." },
+      { title: "AI Copywriting with Claude: Practical Patterns", url: "https://docs.anthropic.com/en/prompt-library/library", type: "tool", tags: ["copywriting", "Claude", "content"], description: "Curated prompts for creative writing, campaign copy, and brand voice." },
+      { title: "Runway ML: Video and Motion AI", url: "https://runwayml.com/learn/", type: "tool", tags: ["video", "motion", "AI video"], description: "AI video generation and editing tools for creative professionals." },
+      { title: "AI in Music Production: Suno and Udio", url: "https://suno.com/blog/introducing-suno", type: "article", tags: ["music", "audio", "AI creative"], description: "How AI music tools are changing composition and sound design workflows." },
+      { title: "Prompt Engineering for Creative Work", url: "https://www.promptingguide.ai", type: "article", tags: ["prompting", "creative", "image generation"], description: "Writing prompts that produce consistent, on-brand creative output." },
+      { title: "Notion AI for Content Creators", url: "https://www.notion.so/product/ai", type: "tool", tags: ["content", "writing", "workflow"], description: "AI writing assistance for brainstorming, drafting, and editing content at scale." },
+      { title: "The Future of Creative Work with AI – Ethan Mollick", url: "https://www.oneusefulthing.org/p/how-to-use-ai-to-do-practical-stuff", type: "article", tags: ["creative", "future of work", "AI strategy"], description: "Research-based perspective on how AI is reshaping creative professions." },
+      { title: "Figma AI: Design Faster with AI", url: "https://www.figma.com/ai/", type: "tool", tags: ["design", "Figma", "UI/UX"], description: "AI features in Figma for generating UI components, copy, and design suggestions." },
+    ],
+  },
+  // AI for Tech Management track resources
+  {
+    trackSlug: "ai-for-tech-management",
+    resources: [
+      { title: "AI for Product Managers – Lenny's Newsletter", url: "https://www.lennysnewsletter.com/p/a-product-managers-guide-to-ai", type: "article", tags: ["product management", "AI tools", "PM"], description: "Comprehensive guide for PMs: how to use AI to move faster and build better products." },
+      { title: "AI For Everyone – Andrew Ng (Coursera)", url: "https://www.coursera.org/learn/ai-for-everyone", type: "course", tags: ["AI strategy", "management", "non-technical"], description: "Essential non-technical course for tech managers on AI strategy and execution." },
+      { title: "Building AI Products: a16z Guide", url: "https://a16z.com/ai-canon/", type: "article", tags: ["product", "AI strategy", "leadership"], description: "Strategic frameworks from a16z for leading teams that build AI products." },
+      { title: "GitHub Copilot for Engineering Teams", url: "https://docs.github.com/en/copilot", type: "tool", tags: ["engineering", "productivity", "AI tools"], description: "How to evaluate, roll out, and measure GitHub Copilot adoption across your team." },
+      { title: "AI Strategy for Tech Leads: State of AI Report", url: "https://www.stateof.ai", type: "article", tags: ["strategy", "trends", "leadership"], description: "Annual benchmark report — essential reading for tech managers tracking the AI landscape." },
+      { title: "Managing AI Engineering Teams", url: "https://huyenchip.com/2023/04/11/llm-engineering.html", type: "article", tags: ["LLM engineering", "team management", "production"], description: "Engineering and organizational considerations for leading LLM-powered product development." },
+      { title: "No Priors Podcast – AI Product and Leadership", url: "https://www.nopriorsshow.com", type: "video", tags: ["podcast", "leadership", "product strategy"], description: "Conversations with AI product leaders on strategy, hiring, and building in the AI era." },
+      { title: "Emerging Architectures for LLM Apps — a16z", url: "https://a16z.com/emerging-architectures-for-llm-applications/", type: "article", tags: ["architecture", "technical leadership", "LLM"], description: "System design patterns tech leads must understand to make sound AI architectural decisions." },
+      { title: "Notion AI for Team Operations", url: "https://www.notion.so/product/ai", type: "tool", tags: ["operations", "team productivity", "AI tools"], description: "AI-powered documentation, meeting notes, and knowledge management for tech teams." },
+    ],
+  },
+];
+
+const tracks = [
+  {
+    id: "track_legal",
+    slug: "ai-for-legal",
+    title: "IA para Jurídico",
+    description: "Para advogados, consultores jurídicos e profissionais do direito que querem usar IA para revisar contratos, pesquisar precedentes e redigir documentos com mais velocidade e precisão.",
+    icon: "⚖️",
+    color: "blue",
+    domain: "legal",
+  },
+  {
+    id: "track_creative",
+    slug: "ai-for-creative",
+    title: "IA para Criativos",
+    description: "Para designers, redatores, artistas e criadores de conteúdo que querem integrar IA na produção visual, textual e audiovisual — do conceito à entrega final.",
+    icon: "🎨",
+    color: "purple",
+    domain: "creative",
+  },
+  {
+    id: "track_tech_mgmt",
+    slug: "ai-for-tech-management",
+    title: "IA para Gestão de Tech",
+    description: "Para product managers, tech leads e gestores de tecnologia que precisam entender IA para tomar decisões estratégicas, liderar equipes de engenharia e avaliar soluções de mercado.",
+    icon: "🚀",
+    color: "orange",
+    domain: "tech_management",
+  },
+];
+
 async function main() {
   console.log("Seeding resources...");
 
@@ -77,6 +155,38 @@ async function main() {
   }
 
   console.log(`Seeded ${resources.length} resources.`);
+
+  console.log("Seeding domain tracks...");
+
+  for (const track of tracks) {
+    await db.track.upsert({
+      where: { slug: track.slug },
+      create: track,
+      update: { title: track.title, description: track.description, icon: track.icon, color: track.color, domain: track.domain },
+    });
+  }
+
+  for (const trackData of trackResources) {
+    const track = await db.track.findUnique({ where: { slug: trackData.trackSlug } });
+    if (!track) continue;
+
+    for (const [i, res] of trackData.resources.entries()) {
+      const resourceId = `track_res_${trackData.trackSlug.replace(/-/g, "_")}_${String(i + 1).padStart(2, "0")}`;
+      const resource = await db.resource.upsert({
+        where: { id: resourceId },
+        create: { id: resourceId, ...res, stages: ["aware", "exploring", "applying"] },
+        update: { ...res },
+      });
+
+      await db.trackResource.upsert({
+        where: { trackId_resourceId: { trackId: track.id, resourceId: resource.id } },
+        create: { trackId: track.id, resourceId: resource.id, order: i + 1 },
+        update: { order: i + 1 },
+      });
+    }
+  }
+
+  console.log(`Seeded ${tracks.length} tracks with their resources.`);
 }
 
 main()

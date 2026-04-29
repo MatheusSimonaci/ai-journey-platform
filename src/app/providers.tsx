@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { PostHogIdentifier } from "@/components/PostHogIdentifier";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY || "", {
@@ -28,7 +29,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <PostHogProvider client={posthog}>
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <PostHogIdentifier />
+        {children}
+      </SessionProvider>
     </PostHogProvider>
   );
 }

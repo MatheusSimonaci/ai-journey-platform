@@ -73,8 +73,7 @@ export async function POST(req: NextRequest) {
     }
   });
 
-  await trackServerEvent("onboarding_completed", {
-    user_id: userId,
+  await trackServerEvent("onboarding_completed", userId, {
     ai_experience_level: answers.experience,
     primary_goal: answers.goal,
     path_stage: stage,
@@ -82,8 +81,7 @@ export async function POST(req: NextRequest) {
   });
 
   validIds.forEach((resourceId) => {
-    trackServerEvent("resource_assigned", {
-      user_id: userId,
+    trackServerEvent("resource_assigned", userId, {
       resource_id: resourceId,
       resource_count: validIds.length,
       path_stage: stage,

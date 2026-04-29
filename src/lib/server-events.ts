@@ -1,5 +1,6 @@
 export async function trackServerEvent(
   eventName: string,
+  userId: string,
   properties: Record<string, unknown>
 ) {
   if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) {
@@ -14,6 +15,7 @@ export async function trackServerEvent(
       body: JSON.stringify({
         api_key: process.env.NEXT_PUBLIC_POSTHOG_KEY,
         event: eventName,
+        distinct_id: userId,
         properties: {
           ...properties,
           timestamp: new Date().toISOString(),
